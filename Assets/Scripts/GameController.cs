@@ -11,14 +11,21 @@ public class GameController : MonoBehaviour
     public RawImage background;
     public RawImage platform;
     public GameObject uiIdle;
-    
+    public GameObject uiScore;
+    public Text pointsText;
     public GameState gameState = GameState.Idle;
 
     public GameObject player;
     public GameObject enemyGenerator;
 
-    private AudioSource musicPlayer;
+    public float scaleTime = 6f;
+    public float scaleInc = .25f;
 
+    private AudioSource musicPlayer;
+    private int points = 0;
+    
+    // Random for game speed   
+    private float[] speed = {1f, 1.2f, 1.4f, 1.6f, 1.7f, 1.8f, 1.9f, 2f, 2.1f, 2.2f, 2.3f};
     // Start is called before the first frame update
     void Start()
     {
@@ -34,9 +41,10 @@ public class GameController : MonoBehaviour
         {
             gameState = GameState.Playing;
             uiIdle.SetActive(false);
+            uiScore.SetActive(true);
             player.SendMessage("UpdateState", "PlayerRun");
             enemyGenerator.SendMessage("StartGenerator");
-            musicPlayer.Play();
+            musicPlayer.Play();            
         }
         // Juego en marcha
         else if(gameState == GameState.Playing)
@@ -57,6 +65,25 @@ public class GameController : MonoBehaviour
         platform.uvRect = new Rect(platform.uvRect.x + finalSpeed * 4, 0f, 1f, 1f);
     }
     public void RestartGame(){
+        ResetTimeScale();
         SceneManager.LoadScene("SampleScene");
+    }
+
+    void GameTimeScale(){          
+        int rand = Random.Range(0,10);
+        Debug.Log("Rand: "+rand+" Speed: "+ speed[rand]);
+        Time.timeScale = speed[rand];
+        Debug.Log("Ritmo incrementado: "+ Time.timeScale.ToString());
+    }
+    public void ResetTimeScale(float newTimeScale = 1f){
+        CancelInvoke("GameTimeScale");
+        Time.timeScale = newTimeScale;
+        Debug.Log("Ritmo reestablecido: "+ Time.timeScale.ToString());
+    }
+    public void IncreasePoints(){        
+        pointsText.text = (++points).ToString();
+        if(points%3==0){
+            GameTimeScale();
+        }
     }
 }
