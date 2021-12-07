@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public RawImage platform;
     public GameObject uiIdle;
     public GameObject uiScore;
+    public GameObject uiLoser;
     public Text pointsText;
     public GameState gameState = GameState.Idle;
 
@@ -29,7 +30,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        musicPlayer = GetComponent<AudioSource>();
+        musicPlayer = GetComponent<AudioSource>();        
     }
 
     // Update is called once per frame
@@ -45,6 +46,7 @@ public class GameController : MonoBehaviour
             player.SendMessage("UpdateState", "PlayerRun");
             enemyGenerator.SendMessage("StartGenerator");
             musicPlayer.Play();            
+            musicPlayer.volume = 0.2f;
         }
         // Juego en marcha
         else if(gameState == GameState.Playing)
@@ -52,38 +54,48 @@ public class GameController : MonoBehaviour
             Parallax();
         }        
         // Juego preparado para reiniciarse
-        else if (gameState == GameState.Ready){
+        else if (gameState == GameState.Ready){            
             if(userAction){
                 RestartGame();
             }
         }
     }
-
+    // Efecto de movimiento del background
     void Parallax(){
         float finalSpeed = parallaxSpeed * Time.deltaTime;
         background.uvRect = new Rect(background.uvRect.x + finalSpeed, 0f, 1f, 1f);
         platform.uvRect = new Rect(platform.uvRect.x + finalSpeed * 4, 0f, 1f, 1f);
     }
+
+    // Reiniciar partida
     public void RestartGame(){
         ResetTimeScale();
         SceneManager.LoadScene("SampleScene");
     }
-
+    // Obtiene una velocidad al azar  
     void GameTimeScale(){          
         int rand = Random.Range(0,10);
         Debug.Log("Rand: "+rand+" Speed: "+ speed[rand]);
         Time.timeScale = speed[rand];
         Debug.Log("Ritmo incrementado: "+ Time.timeScale.ToString());
     }
+
+    // Reestablecer velocidad de juego
     public void ResetTimeScale(float newTimeScale = 1f){
         CancelInvoke("GameTimeScale");
         Time.timeScale = newTimeScale;
         Debug.Log("Ritmo reestablecido: "+ Time.timeScale.ToString());
     }
+    // Aumenta el puntaje y cada 3 cambia la velocidad
     public void IncreasePoints(){        
         pointsText.text = (++points).ToString();
         if(points%3==0){
             GameTimeScale();
         }
+    }
+
+    // Muestra un mensaje de que se ha perdido la partida
+    public void ShowLoserText(){
+        uiLoser.SetActive(true);
     }
 }

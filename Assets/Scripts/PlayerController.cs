@@ -37,12 +37,14 @@ public class PlayerController : MonoBehaviour
             enemyGenerator.SendMessage("CancelGenerator", true);
             game.SendMessage("ResetTimeScale", 0.5f);
             game.GetComponent<AudioSource>().Stop();
+            game.SendMessage("ShowLoserText");
         }else if(other.gameObject.tag == "Point"){
             game.SendMessage("IncreasePoints");
         }
         
     }
 
+    // Setea el juego a listo para comenzar
     void GameReady(){
         game.GetComponent<GameController>().gameState = GameState.Ready;
     }
