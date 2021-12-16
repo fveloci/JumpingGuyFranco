@@ -32,13 +32,17 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        musicPlayer = GetComponent<AudioSource>();        
+        musicPlayer = GetComponent<AudioSource>();            
     }
 
     // Update is called once per frame
     void Update()
     {
         bool userAction = Input.GetKeyDown("up") || Input.GetMouseButtonDown(0);
+        if(Input.GetKey(KeyCode.Escape)){
+            Application.Quit();
+            Debug.Log("Game quited");
+        }
         //Empieza el juego
         if(gameState == GameState.Idle && userAction)
         {
@@ -94,6 +98,13 @@ public class GameController : MonoBehaviour
         if(points%3==0){
             GameTimeScale();
         }
+    }
+
+    // Disminuye el puntaje
+    public void DecreasePoints(){
+        if(points > 0){
+            pointsText.text = (--points).ToString();
+        }        
     }
 
     // Muestra un mensaje de que se ha perdido la partida

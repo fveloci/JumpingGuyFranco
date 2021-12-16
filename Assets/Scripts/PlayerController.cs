@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
             {
                 life --;
                 Destroy(hearts[life].gameObject);
+                game.SendMessage("DecreasePoints");
             }            
         }else if(other.gameObject.tag == "Point"){
             game.SendMessage("IncreasePoints");
