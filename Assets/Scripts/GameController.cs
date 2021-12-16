@@ -19,8 +19,10 @@ public class GameController : MonoBehaviour
     public GameObject player;
     public GameObject enemyGenerator;
 
+
     public float scaleTime = 6f;
     public float scaleInc = .25f;
+    
 
     private AudioSource musicPlayer;
     private int points = 0;

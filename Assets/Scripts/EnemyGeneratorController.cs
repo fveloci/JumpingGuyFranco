@@ -6,7 +6,7 @@ public class EnemyGeneratorController : MonoBehaviour
 {
 
     public GameObject enemyPrefab;
-    public float generatorTimer = 4f;
+    public float generatorTimer = 1.6f;
 
     // Start is called before the first frame update
     void Start()

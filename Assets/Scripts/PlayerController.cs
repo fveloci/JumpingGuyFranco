@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     public GameObject game;
     public GameObject enemyGenerator;
+    public GameObject[] hearts;
+    private int life;
 
     private Animator animator;
 
@@ -13,6 +15,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        life = hearts.Length;
     }
 
     // Update is called once per frame
@@ -31,13 +34,20 @@ public class PlayerController : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other){
-        if(other.gameObject.tag == "Enemy"){
-            UpdateState("PlayerDie");
-            game.GetComponent<GameController>().gameState = GameState.Ended;
-            enemyGenerator.SendMessage("CancelGenerator", true);
-            game.SendMessage("ResetTimeScale", 0.5f);
-            game.GetComponent<AudioSource>().Stop();
-            game.SendMessage("ShowLoserText");
+        if(other.gameObject.tag == "Enemy"){            
+            if(life < 1)
+            {
+                UpdateState("PlayerDie");
+                game.GetComponent<GameController>().gameState = GameState.Ended;
+                enemyGenerator.SendMessage("CancelGenerator", true);
+                game.SendMessage("ResetTimeScale", 0.5f);
+                game.GetComponent<AudioSource>().Stop();
+                game.SendMessage("ShowLoserText");
+            }else
+            {
+                life --;
+                Destroy(hearts[life].gameObject);
+            }            
         }else if(other.gameObject.tag == "Point"){
             game.SendMessage("IncreasePoints");
         }
